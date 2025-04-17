@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      text-align: center;
+    }
+    #options button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #next-btn {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+    }
+    #score-container {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz Game</h1>
+    <div id="question-container">
+      <p id="question">Loading...</p>
+      <div id="options"></div>
+    </div>
+    <button id="next-btn">Next</button>
+    <div id="score-container"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Berlin", "Paris", "Rome", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "2 + 2 equals?",
+        options: ["3", "4", "5", "6"],
+        answer: "4"
+      },
+      {
+        question: "Which language runs in the browser?",
+        options: ["Python", "C++", "Java", "JavaScript"],
+        answer: "JavaScript"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score-container");
+
+    function showQuestion(index) {
+      const q = questions[index];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[currentQuestion].answer;
+      if (selected === correct) {
+        score++;
+      }
+      nextBtn.style.display = "inline-block";
+      Array.from(optionsEl.children).forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correct) {
+          btn.style.backgroundColor = "#d4edda";
+        } else if (btn.textContent === selected) {
+          btn.style.backgroundColor = "#f8d7da";
+        }
+      });
+    }
+
+    nextBtn.onclick = () => {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion(currentQuestion);
+        nextBtn.style.display = "none";
+      } else {
+        showScore();
+      }
+    };
+
+    function showScore() {
+      questionEl.style.display = "none";
+      optionsEl.style.display = "none";
+      nextBtn.style.display = "none";
+      scoreEl.innerHTML = `You scored ${score} out of ${questions.length}`;
+    }
+
+    showQuestion(currentQuestion);
+  </script>
+</body>
+</html>
